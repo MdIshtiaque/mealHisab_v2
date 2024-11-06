@@ -1,9 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 
-
-Route::get('/', function () {
-    return b2RetrieveFile('test.txt');
-});
+Route::get('/{any}', function () {
+    return view('Layout.app');
+})->where('any', '.*');
