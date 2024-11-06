@@ -1,46 +1,67 @@
+import axios from 'axios';
+
 export const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
 };
 
 export const validatePassword = (password) => {
-    const minLength = 8;
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasLowerCase = /[a-z]/.test(password);
-    const hasNumbers = /\d/.test(password);
+    // const minLength = 8;
+    // const hasUpperCase = /[A-Z]/.test(password);
+    // const hasLowerCase = /[a-z]/.test(password);
+    // const hasNumbers = /\d/.test(password);
 
-    return password.length >= minLength && hasUpperCase && hasLowerCase && hasNumbers;
+    // return password.length >= minLength && hasUpperCase && hasLowerCase && hasNumbers;
+    return true;
 };
 
 export const handleLoginRequest = async (credentials) => {
     try {
-        // Here you would make your API call to your backend
-        // For now, we'll just simulate an API call
-        console.log('Login credentials:', credentials);
+        const response = await axios.post('/api/login', credentials);
 
-        // Simulate API response
+        // Store the token in localStorage
+        if (response.data.token) {
+            localStorage.setItem('token', response.data.token);
+            // Set axios default header for future requests
+            axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+        }
+
         return {
             success: true,
-            message: 'Login successful'
+            data: response.data
         };
     } catch (error) {
-        console.error('Login error:', error);
+        console.error('Login error:', error.response?.data?.message || error.message);
         throw error;
     }
 };
 
 export const handleRegisterRequest = async (userData) => {
     try {
-        // Here you would make your API call to your backend
-        console.log('Registration data:', userData);
-
-        // Simulate API response
+        const response = await axios.post('/api/register', userData);
         return {
             success: true,
-            message: 'Registration successful'
+            data: response.data
         };
     } catch (error) {
-        console.error('Registration error:', error);
+        console.error('Registration error:', error.response?.data?.message || error.message);
+        throw error;
+    }
+};
+
+export const handleLogoutRequest = async () => {
+    try {
+        await axios.post('/api/logout');
+        // Clear token from localStorage
+        localStorage.removeItem('token');
+        // Remove axios default header
+        delete axios.defaults.headers.common['Authorization'];
+
+        return {
+            success: true
+        };
+    } catch (error) {
+        console.error('Logout error:', error.response?.data?.message || error.message);
         throw error;
     }
 };

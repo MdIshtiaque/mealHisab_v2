@@ -25,8 +25,36 @@ export default {
                     DEFAULT: '#3B82F6', // Medium blue
                     dark: '#2563EB',   // Dark blue
                 },
+                success: {
+                    light: '#34D399',
+                    DEFAULT: '#10B981',
+                },
+                warning: {
+                    light: '#FBBF24',
+                    DEFAULT: '#F59E0B',
+                },
+                danger: {
+                    light: '#F87171',
+                    DEFAULT: '#EF4444',
+                },
+                purple: {
+                    light: '#A78BFA',
+                    DEFAULT: '#8B5CF6',
+                }
+            },
+            boxShadow: {
+                'soft-xl': '0 20px 27px 0 rgba(0, 0, 0, 0.05)',
             }
         },
     },
+    safelist: [
+        {
+            pattern: /(bg|text|border)-(primary|secondary|success|warning|danger|purple)/,
+            variants: ['hover', 'focus', 'active'],
+        },
+        {
+            pattern: /(from|to)-(primary|secondary|success|warning|danger|purple)(-light)?/,
+        },
+    ],
     plugins: [],
 };
