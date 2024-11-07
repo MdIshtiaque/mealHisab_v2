@@ -37,13 +37,45 @@ const routes = [
                 component: DashboardComponent,
                 meta: { title: 'Dashboard' }
             },
+            // Group Routes
             {
                 path: 'groups',
                 name: 'groups',
                 component: GroupsIndex,
                 meta: { title: 'Groups' }
             },
-            // Add meta titles for all routes
+            {
+                path: 'groups/create',
+                name: 'groups.create',
+                component: GroupCreate,
+                meta: { title: 'Create Group' }
+            },
+            {
+                path: 'groups/members',
+                name: 'groups.members',
+                component: GroupMembers,
+                meta: { title: 'Manage Members' }
+            },
+            // Meal Routes
+            {
+                path: 'meals',
+                name: 'meals',
+                component: MealsIndex,
+                meta: { title: 'Daily Meals' }
+            },
+            {
+                path: 'meals/calculator',
+                name: 'meals.calculator',
+                component: MealCalculator,
+                meta: { title: 'Meal Calculator' }
+            },
+            {
+                path: 'meals/history',
+                name: 'meals.history',
+                component: MealHistory,
+                meta: { title: 'Meal History' }
+            },
+            // Finance Routes
             {
                 path: 'finance/expenses',
                 name: 'finance.expenses',
@@ -61,6 +93,19 @@ const routes = [
                 name: 'finance.reports',
                 component: FinanceReports,
                 meta: { title: 'Monthly Reports' }
+            },
+            // Other Routes
+            {
+                path: 'settings',
+                name: 'settings',
+                component: Settings,
+                meta: { title: 'Settings' }
+            },
+            {
+                path: 'support',
+                name: 'support',
+                component: Support,
+                meta: { title: 'Help & Support' }
             }
         ]
     },
