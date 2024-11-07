@@ -10,7 +10,7 @@
                 :to="item.route"
                 class="flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200"
                 :class="[
-                    item.active
+                    isActive(item)
                         ? 'bg-gradient-to-r from-primary/10 to-secondary/10 text-primary'
                         : 'text-gray-600 hover:bg-gray-100'
                 ]"
@@ -23,7 +23,11 @@
 </template>
 
 <script setup>
-defineProps({
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+
+const props = defineProps({
     title: {
         type: String,
         required: true
@@ -33,4 +37,14 @@ defineProps({
         required: true
     }
 });
+
+const isActive = (item) => {
+    // Exact match for dashboard
+    if (item.route === '/dashboard') {
+        return route.path === '/dashboard';
+    }
+
+    // For other routes, check if current path starts with the item's route
+    return route.path.startsWith(item.route);
+};
 </script>

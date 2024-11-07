@@ -98,18 +98,18 @@
                 <span class="text-xs font-medium text-gray-500">Meals</span>
                 <i class="fas fa-utensils text-gray-400"></i>
               </div>
-              <p class="text-lg font-semibold text-gray-800 mt-1">{{ group.meals_count }}</p>
+              <p class="text-lg font-semibold text-gray-800 mt-1">{{ group.meals_count || 0 }}</p>
             </div>
           </div>
           <div class="mt-3 bg-gray-50/80 p-3 rounded-lg">
             <div class="flex items-center justify-between">
               <div>
                 <span class="text-xs font-medium text-gray-500">Balance</span>
-                <p class="text-lg font-semibold text-success mt-1">${{ group.balance }}</p>
+                <p class="text-lg font-semibold text-success mt-1">${{ group.balance || 0 }}</p>
               </div>
               <div class="text-right">
                 <span class="text-xs font-medium text-gray-500">Rate</span>
-                <p class="text-lg font-semibold text-gray-800 mt-1">${{ group.rate }}</p>
+                <p class="text-lg font-semibold text-gray-800 mt-1">${{ group.rate || 0.00 }}</p>
               </div>
             </div>
           </div>
@@ -127,15 +127,15 @@
                   class="w-7 h-7 rounded-full border-2 border-white"
                 >
               </template>
-              <span
+              <!-- <span
                 v-if="group.members_count > 3"
                 class="flex items-center justify-center w-7 h-7 rounded-full border-2 border-white bg-gray-100 text-xs font-medium text-gray-500"
               >
                 +{{ group.members_count - 3 }}
-              </span>
+              </span> -->
             </div>
             <router-link
-              :to="{ name: 'groups.show', params: { id: group.id }}"
+              :to="{ name: 'groups', params: { id: group.id }}"
               class="inline-flex items-center px-3 py-1.5 bg-primary/10 text-primary rounded-lg text-sm font-medium hover:bg-primary/20 transition-all duration-200"
             >
               <i class="fas fa-chart-line mr-1.5"></i>
@@ -198,6 +198,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import CreateGroupModal from './CreateGroupModal.vue';
 import { format } from 'date-fns';
+import { GroupsService } from '../../services/groups.service';
 
 // State
 const groups = ref([]);
@@ -262,8 +263,7 @@ const displayedPages = computed(() => {
 // Methods
 const fetchGroups = async () => {
   try {
-    const response = await fetch('/api/groups');
-    const data = await response.json();
+    const data = await GroupsService.fetchGroups();
     groups.value = data.groups;
     lastPage.value = Math.ceil(data.groups.length / 9);
   } catch (error) {

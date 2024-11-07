@@ -135,12 +135,11 @@ const handleLogout = async () => {
 
 // Navigation items
 const mainMenuItems = [
-    { icon: 'fa-home', text: 'Dashboard', route: '/dashboard', active: true }
+    { icon: 'fa-home', text: 'Dashboard', route: '/dashboard' }
 ];
 
 const groupItems = [
     { icon: 'fa-users-rectangle', text: 'All Groups', route: '/groups' },
-    { icon: 'fa-plus', text: 'Create New Group', route: '/groups/create' },
     { icon: 'fa-user-group', text: 'Manage Members', route: '/groups/members' }
 ];
 
