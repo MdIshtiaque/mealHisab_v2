@@ -1,13 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 
-// Layouts
+// Layouts & Components
 import DashboardLayout from '../layouts/DashboardLayout.vue';
-
-// Components
-import DashboardComponent from '../components/DashboardComponent.vue';
 import LoginComponent from '../components/LoginComponent.vue';
-
+import DashboardComponent from '../components/DashboardComponent.vue';
 // Lazy-loaded components
 const GroupsIndex = () => import('../components/groups/IndexComponent.vue');
 const GroupCreate = () => import('../components/groups/CreateComponent.vue');
@@ -21,41 +18,24 @@ const FinanceReports = () => import('../components/finance/ReportsComponent.vue'
 const Settings = () => import('../components/settings/IndexComponent.vue');
 const Support = () => import('../components/support/IndexComponent.vue');
 
-// Auth middleware
-const requireAuth = async (to, from, next) => {
-    const authStore = useAuthStore();
-    if (!authStore.isAuthenticated) {
-        try {
-            await authStore.fetchUser();
-            next();
-        } catch (error) {
-            next('/login');
-        }
-    } else {
-        next();
-    }
-};
-
 const routes = [
-    {
-        path: '/',
-        redirect: '/dashboard'
-    },
     {
         path: '/login',
         name: 'login',
         component: LoginComponent,
-        meta: { title: 'Login' }
+        meta: { requiresGuest: true }
     },
+    // Protected Routes Wrapper
     {
-        path: '/dashboard',
+        path: '/',
         component: DashboardLayout,
+        meta: { requiresAuth: true },
         children: [
             {
-                path: '',
+                path: 'dashboard',
                 name: 'dashboard',
                 component: DashboardComponent,
-                meta: { title: 'Dashboard Overview' }
+                meta: { title: 'Dashboard' }
             },
             {
                 path: 'groups',
@@ -83,12 +63,50 @@ const routes = [
                 meta: { title: 'Monthly Reports' }
             }
         ]
+    },
+    // Catch-all route for 404
+    {
+        path: '/:pathMatch(.*)*',
+        redirect: '/dashboard'
     }
 ];
 
 const router = createRouter({
     history: createWebHistory(),
     routes
+});
+
+// Global Navigation Guard
+router.beforeEach(async (to, from, next) => {
+    const authStore = useAuthStore();
+    const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+    const requiresGuest = to.matched.some(record => record.meta.requiresGuest);
+
+    // If route requires authentication
+    if (requiresAuth) {
+        if (!authStore.isAuthenticated) {
+            try {
+                await authStore.fetchUser();
+                next();
+            } catch (error) {
+                next('/login');
+            }
+        } else {
+            next();
+        }
+    }
+    // If route requires guest access (like login page)
+    else if (requiresGuest) {
+        if (authStore.isAuthenticated) {
+            next('/dashboard');
+        } else {
+            next();
+        }
+    }
+    // Public routes
+    else {
+        next();
+    }
 });
 
 export default router;
